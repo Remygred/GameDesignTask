@@ -1,0 +1,87 @@
+###################  操作系统  ###################
+# macOS
+.DS_Store
+# Windows
+Thumbs.db
+desktop.ini
+
+###################  通用文件  ###################
+# 编辑器/IDE
+.idea/
+.vscode/
+*.swp
+# 日志 & 临时
+*.log
+*.tmp
+*.bak
+# 环境变量 & 密钥
+.env
+*.pem
+*.key
+*.pfx
+
+###################  Python  ###################
+__pycache__/
+*.py[cod]
+*.so
+*.pyd
+*.egg-info/
+build/
+dist/
+ENV/
+venv*/
+.ipynb_checkpoints/
+
+###################  Node.js  ###################
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-store/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+###################  C / C++ / 编译产物  ###################
+*.o
+*.obj
+*.dll
+*.so
+*.a
+*.dylib
+*.exe
+*.out
+*.ilk
+*.pdb
+
+###################  Visual Studio / MSBuild  ###################
+.vs/
+*.suo
+*.vcxproj.user
+*.user
+Debug/
+Release/
+x64/
+
+###################  Unity  ###################
+Library/
+Temp/
+Obj/
+Logs/
+UserSettings/
+# 可选：忽略自动生成的 IDE/解决方案文件
+*.pidb
+*.sln
+*.csproj
+
+###################  图像 & 压缩包  ###################
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.psd
+*.zip
+*.tar
+*.tar.gz
+*.7z
+*.rar
