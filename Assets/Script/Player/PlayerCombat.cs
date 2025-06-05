@@ -85,7 +85,7 @@ public class PlayerCombat : MonoBehaviour
             chargeTimer += Time.deltaTime;
             OnChargeUpdate?.Invoke(Mathf.Clamp01(chargeTimer / chargeThreshold));
 
-            Debug.Log($"<color=yellow>[PlayerCombat]</color> 蓄力进度: {chargeTimer:F1}s");
+            if(chargeTimer <= chargeThreshold) Debug.Log($"<color=yellow>[PlayerCombat]</color> 蓄力进度: {chargeTimer:F1}s");
         }
 
         // 左键松开：根据蓄力长短判断出手方式
