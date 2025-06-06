@@ -38,16 +38,4 @@ public class UIManager : MonoBehaviour
     {
         if (healthBar) healthBar.value = (float)currentHealth / maxHealth;
     }
-
-    // 显示胜利界面
-    public void ShowWin()
-    {
-        if (winPanel) winPanel.SetActive(true);
-    }
-
-    // 显示失败界面
-    public void ShowLose()
-    {
-        if (losePanel) losePanel.SetActive(true);
-    }
 }
