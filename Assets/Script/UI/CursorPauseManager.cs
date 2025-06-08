@@ -65,11 +65,25 @@ public class CursorPauseManager : MonoBehaviour
         onGameResumed?.Invoke();
     }
 
-    public void QuitToMenu(string menuSceneName = "Menu")
+    public void QuitToMenu(string menuSceneName = "MainMenu")
     {
         Time.timeScale = 1f;
         LockCursor(false);              // 回主菜单可让鼠标解锁
         SceneManager.LoadScene(menuSceneName);
+    }
+
+    // 重启当前关卡
+    public void Restart()
+    {
+        ResetGameState(); // 先重置状态
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    // 关键方法：重置游戏状态（时间+光标）
+    private void ResetGameState()
+    {
+        Time.timeScale = 1f; // 确保时间恢复
+        LockCursor(true); // 恢复游戏时锁定鼠标
     }
     #endregion
 

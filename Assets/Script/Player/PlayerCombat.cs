@@ -176,8 +176,6 @@ public class PlayerCombat : MonoBehaviour
         {
             ec.TakeDamage(dmg, transform);
         }
-
-        FindObjectOfType<UIManager>()?.HitFlash();
     }
     #endregion
 

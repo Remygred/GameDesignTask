@@ -44,6 +44,8 @@ public class LevelManager : MonoBehaviour
     /* ---------- 敌人 / 玩家 调用 ---------- */
     public void OnEnemyDefeated()
     {
+        Cursor.lockState = CursorLockMode.None;     // 解锁
+        Cursor.visible = true;
         Debug.Log("[LevelManager] Enemy defeated");
         if (victoryPanel) victoryPanel.SetActive(true);
         Time.timeScale = 0f;
@@ -51,6 +53,8 @@ public class LevelManager : MonoBehaviour
 
     public void OnPlayerDefeated()
     {
+        Cursor.lockState = CursorLockMode.None;     // 解锁
+        Cursor.visible = true;
         Debug.Log("[LevelManager] Player defeated");
         if (defeatPanel) defeatPanel.SetActive(true);
         Time.timeScale = 0f;

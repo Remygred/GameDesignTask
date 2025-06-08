@@ -13,7 +13,8 @@ public class PlayerHealth : MonoBehaviour
     [Header("生命值")]
     [Tooltip("玩家最大 HP")] public int maxHp = 120;
     [SerializeField]
-    public int hp;
+    private int hp;
+    public int Hp => hp;
 
     [Header("受击参数")]
     [Tooltip("受击硬直时间 (s)")] public float stunTime = 0.35f;
