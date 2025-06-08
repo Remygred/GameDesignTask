@@ -35,7 +35,7 @@ public class EnemyController : MonoBehaviour
     [HideInInspector]
     public bool isBlocking;   // 由 AI 控制，格挡时不能攻击
 
-    internal Animator anim;
+    public Animator anim;
     private EnemyHealth hp;
     private float nextAtk; // 下一次允许攻击的时间戳
 
@@ -48,7 +48,7 @@ public class EnemyController : MonoBehaviour
     }
 
     /// <summary>AI 调用：尝试出拳</summary>
-    public void AttackPlayer(Transform player)
+    public void AttackPlayer(Transform player, PlayerCombat combat)
     {
         // 1. 冷却与状态校验
         if (!CanAttack) return;
@@ -68,6 +68,7 @@ public class EnemyController : MonoBehaviour
 
         // 4. 延迟 0.1s 之后进行伤害判定（可与动画的出拳峰值同步）
         Invoke(nameof(DealDamage), 0.1f);
+        combat.CancelCharging();
 
         // 5. 设置下一次可攻击时间
         nextAtk = Time.time + cooldown;

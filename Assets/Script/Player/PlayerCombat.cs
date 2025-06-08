@@ -11,6 +11,7 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private LayerMask enemyMask;     // 只检测敌人的层
     [SerializeField] private LayerMask obstacleMask;  // 会阻挡射线的墙体层
     [SerializeField] private Transform muzzle;        // 射线发射点（为空默认用相机位置）
+    [SerializeField] private Animator anim;
 
     [Header("攻击基础")]
     public int normalDamage = 10;   // 最低伤害
@@ -27,6 +28,7 @@ public class PlayerCombat : MonoBehaviour
 
     [Header("通用音效")]
     public AudioClip swingSfx, hitSfx;
+    public AudioClip chargingSfx;
     #endregion
 
     #region 私有字段
@@ -34,6 +36,7 @@ public class PlayerCombat : MonoBehaviour
     private bool isCharging;
     private float chargeTimer;
     private bool isBlocking;
+    private bool isPunching;
     private AudioSource audioSrc;
     #endregion
 
@@ -43,6 +46,7 @@ public class PlayerCombat : MonoBehaviour
     public bool IsBlocking => isBlocking;
     public float BlockDamageRate => blockDamageRate;
     public bool IsCharging => isCharging;
+    public bool IsPunching => isPunching;
 
     // ──────────────────────────────
     void Start()
@@ -50,6 +54,7 @@ public class PlayerCombat : MonoBehaviour
         if (!cam) cam = Camera.main;
         if (!muzzle) muzzle = cam.transform;
         audioSrc = GetComponent<AudioSource>();
+        anim = GetComponent<Animator>();
         Debug.Log("<color=cyan>[PlayerCombat]</color> 初始化完毕");
     }
 
@@ -69,7 +74,9 @@ public class PlayerCombat : MonoBehaviour
         {
             isCharging = true;
             chargeTimer = 0f;
+            anim.SetBool("Charge", true); // 启动蓄力动画   
             Debug.Log("<color=yellow>[PlayerCombat]</color> 开始蓄力");
+
         }
 
         // —— 蓄力中 —— //
@@ -82,6 +89,8 @@ public class PlayerCombat : MonoBehaviour
         // —— 松开出拳 —— //
         if (Input.GetKeyUp(KeyCode.Mouse0) && isCharging)
         {
+            anim.SetBool("Charge", false); // 停止蓄力动画
+
             float scale = Mathf.Clamp01(chargeTimer / chargeThreshold); // 0~1
             int dmg = Mathf.RoundToInt(Mathf.Lerp(normalDamage, heavyDamage, scale));
             float force = Mathf.Lerp(hitForce, hitForce * heavyDamage / normalDamage, scale);
@@ -94,6 +103,7 @@ public class PlayerCombat : MonoBehaviour
 
             // 重置状态
             isCharging = false;
+            isPunching = true;
             OnChargeUpdate?.Invoke(0f);
         }
     }
@@ -104,6 +114,7 @@ public class PlayerCombat : MonoBehaviour
         if (isCharging)
         {
             isCharging = false;
+            anim.SetBool("Charge", false); // 停止蓄力动画
             OnChargeUpdate?.Invoke(0f);
             Debug.Log("<color=grey>[PlayerCombat]</color> 蓄力被打断");
         }
@@ -117,13 +128,15 @@ public class PlayerCombat : MonoBehaviour
     {
         if (isBlocking) return;
         isBlocking = true;
-        //PlaySound(blockStartSfx);
+        anim.SetBool("Block", true); // 启动格挡动画
+        //PlaySound(blockStartSfx);//格挡音效
         Debug.Log("<color=orange>[PlayerCombat]</color> 进入格挡状态");
     }
     private void EndBlock()
     {
         if (!isBlocking) return;
         isBlocking = false;
+        anim.SetBool("Block", false); // 停止格挡动画
         //PlaySound(blockEndSfx);
         Debug.Log("<color=orange>[PlayerCombat]</color> 退出格挡状态");
     }
@@ -133,11 +146,13 @@ public class PlayerCombat : MonoBehaviour
     #region 攻击核心
     private IEnumerator PerformAttack(int finalDamage, float finalForce)
     {
-        //PlaySound(swingSfx);
+        anim.SetTrigger("Punch"); // 启动攻击动画
+        //PlaySound(swingSfx);//攻击音效
         yield return new WaitForSeconds(0.1f); // 对齐动画峰值
 
         if (RayHitEnemy(out RaycastHit hit))
         {
+            //PlaySound(hitSfx); // 命中音效
             Debug.Log($"<color=green>[PlayerCombat]</color> 命中 {hit.collider.name} | 伤害 {finalDamage}");
             ApplyDamage(hit, finalDamage, finalForce);
         }
@@ -145,6 +160,9 @@ public class PlayerCombat : MonoBehaviour
         {
             Debug.Log("<color=grey>[PlayerCombat]</color> 未命中");
         }
+
+        yield return new WaitForSeconds(1f); // 等待攻击动画结束
+        isPunching = false; // 重置攻击状态
     }
 
     /// <summary>

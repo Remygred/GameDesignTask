@@ -2,6 +2,7 @@
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CapsuleCollider))]
+[RequireComponent(typeof(Animator))]  // 确保挂载 Animator
 public class PlayerMovement : MonoBehaviour
 {
     [Header("移动&跳跃参数")]
@@ -16,6 +17,9 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask groundMask;            // 地面层
 
     private Rigidbody rb;
+    [SerializeField]
+    private Animator animator;              // Animator 缓存
+    private PlayerCombat combat;           // 缓存 PlayerCombat
     private bool isGrounded;
     private Vector2 inputDir;               // 输入方向
     private float originalDrag;             // 初始阻尼
@@ -23,8 +27,11 @@ public class PlayerMovement : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        rb.freezeRotation = true;                 // 交给脚本控制转向
+        rb.freezeRotation = true;           // 交给脚本控制转向
         originalDrag = rb.drag;
+
+        animator = GetComponent<Animator>(); // 缓存 Animator
+        combat = GetComponent<PlayerCombat>();  // 缓存
 
         // 若未指定 groundCheck，自动在脚底生成空对象
         if (groundCheck == null)
@@ -41,6 +48,23 @@ public class PlayerMovement : MonoBehaviour
         // 1️⃣ 采样输入
         inputDir = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
+        // —— 优先屏蔽行走动画 —— //
+        if (combat.IsCharging || combat.IsBlocking || combat.IsPunching)
+        {
+            animator.SetBool("MoveForward", false);
+            animator.SetBool("MoveBackward", false);
+            animator.SetBool("MoveRight", false);
+            animator.SetBool("MoveLeft", false);
+        }
+        else
+        {
+            // 只有不在蓄力/格挡时才更新移动动画
+            animator.SetBool("MoveForward", inputDir.y > 0.1f);
+            animator.SetBool("MoveBackward", inputDir.y < -0.1f);
+            animator.SetBool("MoveRight", inputDir.x > 0.1f);
+            animator.SetBool("MoveLeft", inputDir.x < -0.1f);
+        }
+
         // 2️⃣ 跳跃
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
@@ -52,24 +76,24 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        //手动接地检测
+        // 手动接地检测
         isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundMask, QueryTriggerInteraction.Ignore);
 
-        //施加自定义重力（可增强下落速度）
+        // 施加自定义重力（可增强下落速度）
         rb.AddForce(Physics.gravity * (gravityMultiplier - 1f), ForceMode.Acceleration);
 
         // 计算期望速度
         Vector3 wishDir = (transform.right * inputDir.x + transform.forward * inputDir.y).normalized;
         Vector3 wishVel = wishDir * moveSpeed;
 
-        //应用速度（地面 vs 空中）
+        // 应用速度（地面 vs 空中）
         float control = isGrounded ? 1f : airControlPercent;
         Vector3 velocity = rb.velocity;
         velocity.x = Mathf.Lerp(velocity.x, wishVel.x, control);
         velocity.z = Mathf.Lerp(velocity.z, wishVel.z, control);
         rb.velocity = velocity;
 
-        //贴地时加大阻尼，空中减少阻尼
+        // 贴地时加大阻尼，空中减少阻尼
         rb.drag = isGrounded ? originalDrag : 0f;
     }
 

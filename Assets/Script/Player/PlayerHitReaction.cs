@@ -33,7 +33,6 @@ public class PlayerHitReaction : MonoBehaviour
     private IEnumerator HitRoutine(Vector3 dir, float stunTime)
     {
         hardStun = true;
-        if (animator) animator.SetTrigger("Hit");
         rb.AddForce(dir * knockForce, ForceMode.Impulse);
 
         yield return new WaitForSeconds(stunTime);
