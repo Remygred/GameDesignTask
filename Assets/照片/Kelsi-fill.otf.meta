@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: c9a3bbe03f1c5b944b81f28c42f4bc16
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Kelsi 1
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: da8da0f40a4b8934091ac09ce12a0798, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

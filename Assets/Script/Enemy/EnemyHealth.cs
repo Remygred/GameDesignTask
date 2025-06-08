@@ -19,6 +19,8 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     [SerializeField]
     private int hp;
 
+    public int Hp => hp;
+
     [Header("受击参数")]
     [Tooltip("受击硬直时长 (s)")]
     public float stunTime = 0.35f;

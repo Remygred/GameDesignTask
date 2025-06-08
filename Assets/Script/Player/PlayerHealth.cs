@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-
 /// <summary>
 /// 玩家生命管理
 ///     ├ 处理格挡减伤
@@ -14,7 +13,7 @@ public class PlayerHealth : MonoBehaviour
     [Header("生命值")]
     [Tooltip("玩家最大 HP")] public int maxHp = 120;
     [SerializeField]
-    private int hp;
+    public int hp;
 
     [Header("受击参数")]
     [Tooltip("受击硬直时间 (s)")] public float stunTime = 0.35f;
@@ -95,7 +94,6 @@ public class PlayerHealth : MonoBehaviour
         Debug.Log("<color=#ff6600>[PlayerHealth]</color> 无敌帧结束");
 #endif
     }
-
     // 外部只读属性
     public bool IsInvulnerable => invul;
     public float HPPercent => (float)hp / maxHp;
