@@ -214,7 +214,7 @@ public class AdvancedEnemyAI : MonoBehaviour
 
         // 3) 计算一次性后撤目标点（距离 retreatStep）
         Vector3 away = (transform.position - player.position).normalized;
-        float retreatStep = 0.2f; // 想退多远就设置这个值（米）
+        float retreatStep = 0.01f; // 想退多远就设置这个值（米）
         Vector3 targetPos = transform.position + away * retreatStep;
 
         // 动画

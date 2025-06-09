@@ -85,7 +85,10 @@ public class PlayerCombat : MonoBehaviour
         {
             if(chargeTimer < chargeThreshold) chargeTimer += Time.deltaTime;
             OnChargeUpdate?.Invoke(Mathf.Clamp01(chargeTimer / chargeThreshold));
-            if (chargeTimer >= chargeThreshold - 0.5) PlaySound(chargingSfx,2.0f);
+            if (chargeTimer >= chargeThreshold - 0.5)
+            {
+                audioSrc.PlayOneShot(chargingSfx, 0.5f); // 蓄力音效    
+            }
         }
 
         // —— 松开出拳 —— //

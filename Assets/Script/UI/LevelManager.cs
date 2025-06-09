@@ -29,6 +29,7 @@ public class LevelManager : MonoBehaviour
 
     public GameObject BGM;
 
+    [SerializeField]
     AudioSource audioS;//…˘“Ù
     public AudioClip win,lose;
     void Awake()
