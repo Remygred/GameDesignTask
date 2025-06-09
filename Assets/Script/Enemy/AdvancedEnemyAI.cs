@@ -1,48 +1,55 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
-using System.Collections;
 
 /// <summary>
-/// 高级拳击 AI – 更激进版
-/// Phases: ChaseFar → ImmediateAttack → Probe → Approach → Combo → BlockPhase → Evade → Hit
-/// 1. 远程追击距离 > chaseThreshold
-/// 2. 只要 dist ≤ attackDist 且 CanAttack，就立刻进入 Combo（ImmediateAttack）
-/// 3. 否则在 Probe/Approach 才考虑格挡/闪避
+/// 高级拳击 AI – 取消后撤，只做追击/拉锯/进攻/硬直流程
+/// Phases:
+///   Probe     – 拉锯巡航（圈步）
+///   ChaseFar  – 远程追击（玩家跑远时）
+///   Approach  – 接近冲刺（未到攻击距离）
+///   Combo     – 组合拳连击
+///   Hit       – 硬直（被击打时）
+/// 
+/// 行为逻辑：
+/// 1. 如果玩家距离 > chaseThreshold → ChaseFar  
+/// 2. 否则如果距离 ≤ attackDist 且能攻击 → 立即 Combo  
+/// 3. 否则在 Probe/Approach 状态下持续拉锯或接近  
+/// 4. Combo 连击打完后直接回 Probe  
+/// 5. OnStunned 硬直后直接回 Probe  
 /// </summary>
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(EnemyController))]
 public class AdvancedEnemyAI : MonoBehaviour
 {
-    private enum Phase { Probe, ChaseFar, Approach, Combo, BlockPhase, Evade, Hit }
+    // AI 当前阶段
+    private enum Phase { Probe, ChaseFar, Approach, Combo, Hit }
     private Phase phase;
 
     [Header("距离参数")]
-    public float ideal = 3.2f;                   // 最佳拉锯距离
-    public float attackDist = 2.2f;              // 发起Combo距离
-    public float chaseThreshold = 8f;            // 超出此距离时主动远程追击
+    [Tooltip("拉锯时与玩家保持的理想距离")]
+    public float ideal = 3.2f;
+    [Tooltip("进入攻击/连击的最大距离")]
+    public float attackDist = 2.2f;
+    [Tooltip("玩家距离超过此值时触发远程追击")]
+    public float chaseThreshold = 8f;
 
-    [Header("速度")]
-    public float footSpeed = 3.2f;               // 圈步速度
-    public float chaseSpeed = 4f;                // 远程追击速度
-    public float rushSpeed = 4.2f;               // 冲刺/躲避速度
+    [Header("移动速度")]
+    [Tooltip("拉锯/接近时的行走速度")]
+    public float footSpeed = 3.2f;
+    [Tooltip("远程追击时的冲刺速度")]
+    public float chaseSpeed = 4f;
 
     [Header("连击设置")]
+    [Tooltip("连击间隔范围 (s)")]
     public Vector2 comboGap = new Vector2(0.2f, 0.35f);
+    [Tooltip("最少连击次数")]
     public int comboMin = 3;
+    [Tooltip("最多连击次数")]
     public int comboMax = 5;
-    private int comboPunches;
-    private float phaseTimer;
+    private int comboPunches;   // 当前剩余连击次数
+    private float phaseTimer;   // 用于控制 Probe/Combo 的计时
 
-    [Header("格挡设置")]
-    public float blockDetectDist = 1.8f;
-    [Range(0f, 1f)] public float blockChance = 0.3f;     // 降低为 30%
-    public float blockDuration = 0.6f;
-
-    [Header("闪避设置")]
-    public float dodgeDetectDist = 1.5f;
-    [Range(0f, 1f)] public float dodgeChance = 0.1f;     // 降低为 10%
-    public float evadeDur = 0.6f;
-
+    // 内部引用
     private NavMeshAgent agent;
     private EnemyController ec;
     private Animator anim;
@@ -51,62 +58,41 @@ public class AdvancedEnemyAI : MonoBehaviour
 
     void Awake()
     {
+        // 缓存组件和引用
         agent = GetComponent<NavMeshAgent>();
         ec = GetComponent<EnemyController>();
-        anim = ec.anim;
+        anim = ec.anim;  // EnemyController 中应公开 Animator
         player = GameObject.FindGameObjectWithTag("Player").transform;
         pc = player.GetComponent<PlayerCombat>();
+
+        // 进入初始拉锯阶段
         EnterProbe();
     }
 
     void Update()
     {
-        if (player == null || phase == Phase.Hit) return;
+        // 没有玩家或处于硬直时不执行任何 AI 行为
+        if (player == null || phase == Phase.Hit)
+            return;
 
         float dist = Vector3.Distance(transform.position, player.position);
 
-        // 1. 远程追击
+        // 1. 远程追击：玩家跑太远时，优先追上
         if (dist > chaseThreshold)
         {
-            if (phase != Phase.ChaseFar)
-            {
-                phase = Phase.ChaseFar;
-                Debug.Log("<color=#EE3377>[AdvAI]</color> 进入远程追击");
-            }
+            phase = Phase.ChaseFar;
             ChaseFar();
             return;
         }
 
-        // 2. **立刻攻击**：只要到达攻击距离并且冷却允许，就优先进入 Combo
+        // 2. 立即攻击：只要到达攻击距离并且冷却允许，就切到 Combo
         if (dist <= attackDist && ec.CanAttack)
         {
             if (phase != Phase.Combo)
-            {
-                EnterCombo(); // 重置连击次数
-            }
-            // Combo 阶段处理会在后面 switch 中执行
-        }
-        else
-        {
-            // 3. 仅在 Probe/Approach 时才考虑格挡或闪避
-            if (phase == Phase.Probe || phase == Phase.Approach)
-            {
-                // 普攻检测 → BlockPhase
-                if (!pc.IsCharging && dist < blockDetectDist && Random.value < blockChance)
-                {
-                    EnterBlockPhase();
-                    return;
-                }
-                // 蓄力检测 → Dodge
-                if (pc.IsCharging && dist < dodgeDetectDist && Random.value < dodgeChance)
-                {
-                    StartCoroutine(Dodge());
-                    return;
-                }
-            }
+                EnterCombo();
         }
 
-        // 4. 按剩余阶段逻辑执行
+        // 3. 否则根据当前阶段继续拉锯或接近
         switch (phase)
         {
             case Phase.Probe:
@@ -118,210 +104,164 @@ public class AdvancedEnemyAI : MonoBehaviour
             case Phase.Combo:
                 RunCombo();
                 break;
-            case Phase.BlockPhase:
-                // BlockPhase 协程中处理
-                break;
-            case Phase.Evade:
-                RunEvade();
-                break;
         }
     }
 
-    //────────────────── 远程追击 ──────────────────
+    /// <summary>
+    /// ChaseFar 阶段：高速追击玩家
+    /// </summary>
     void ChaseFar()
     {
+        // 更新行走动画
         UpdateMoveAnim(player.position - transform.position);
+
+        // 设置速度与目标
         agent.speed = chaseSpeed;
         if (agent.isOnNavMesh)
             agent.SetDestination(player.position);
+
+        // 始终面向玩家
         transform.LookAt(player);
     }
 
-    //────────────────── Probe 阶段 ──────────────────
+    /// <summary>
+    /// Probe 阶段：围绕拉锯，等时间到或距离合适时切换状态
+    /// </summary>
     void RunProbe()
     {
         phaseTimer -= Time.deltaTime;
-        // 圈步
+
+        // 计算围绕玩家的圈步目标点
         Vector3 dir = (transform.position - player.position).normalized;
         Vector3 tan = Vector3.Cross(Vector3.up, dir);
         Vector3 target = player.position + dir * ideal + tan * Mathf.Sin(Time.time * 2f);
+
         UpdateMoveAnim(target - transform.position);
 
         agent.speed = footSpeed;
         if (agent.isOnNavMesh)
             agent.SetDestination(target);
+
         transform.LookAt(player);
 
+        // 时间到：距离大于攻击距离则接近，否则直接连击
         if (phaseTimer <= 0f)
         {
-            if (Vector3.Distance(transform.position, player.position) > attackDist)
+            if (distToPlayer() > attackDist)
                 EnterApproach();
             else
                 EnterCombo();
         }
     }
 
-    //────────────────── Approach 阶段 ──────────────────
+    /// <summary>
+    /// Approach 阶段：直接冲到攻击范围
+    /// </summary>
     void RunApproach()
     {
         Vector3 toPlayer = (player.position - transform.position).normalized;
         UpdateMoveAnim(toPlayer);
+
         agent.speed = footSpeed;
         if (agent.isOnNavMesh)
+            // 冲刺到玩家前方 attackDist * 0.8 的位置
             agent.SetDestination(player.position - toPlayer * (attackDist * 0.8f));
+
         transform.LookAt(player);
 
-        if (Vector3.Distance(transform.position, player.position) <= attackDist)
+        // 一旦到达攻击距离，切连击
+        if (distToPlayer() <= attackDist)
             EnterCombo();
     }
 
-    //────────────────── Combo 阶段 ──────────────────
+    /// <summary>
+    /// Combo 阶段：执行多次攻击后回 Probe
+    /// </summary>
     void RunCombo()
     {
         if (comboPunches > 0 && ec.CanAttack)
         {
+            // 播放攻击动画
             ResetMoveAnim();
             anim.SetTrigger("Punch");
+
+            // 让 EnemyController 负责实际命中判断和扣血
             ec.AttackPlayer(player, pc);
+
             comboPunches--;
+            // 等待随机间隔后下一拳
             phaseTimer = Random.Range(comboGap.x, comboGap.y);
         }
+        // 所有连击打完且间隔到，回拉锯
         else if (comboPunches <= 0 && phaseTimer <= 0f)
         {
-            EnterEvade();
+            EnterProbe();
         }
     }
 
-    //────────────────── Block & Retreat ──────────────────
-    void EnterBlockPhase()
-    {
-        phase = Phase.BlockPhase;
-        StartCoroutine(BlockAndRetreat());
-    }
-
-    // … 省略前面代码 …
-
-    IEnumerator BlockAndRetreat()
-    {
-        // 1) 先做格挡
-        ec.isBlocking = true;
-        anim.SetBool("Block", true);
-        yield return new WaitForSeconds(blockDuration);
-
-        // 2) 结束格挡
-        ec.isBlocking = false;
-        anim.SetBool("Block", false);
-
-        // 3) 计算一次性后撤目标点（距离 retreatStep）
-        Vector3 away = (transform.position - player.position).normalized;
-        float retreatStep = 0.01f; // 想退多远就设置这个值（米）
-        Vector3 targetPos = transform.position + away * retreatStep;
-
-        // 动画
-        UpdateMoveAnim(away);
-
-        // 用 NavMeshAgent 走过去（如果不在 NavMesh 上可直接 Transform）
-        if (agent.isOnNavMesh)
-        {
-            agent.SetDestination(targetPos);
-            // 等待短暂时间让它移动过去
-            yield return new WaitForSeconds(0.2f);
-        }
-        else
-        {
-            // fallback：直接位移一小段
-            transform.Translate(away * retreatStep, Space.World);
-            yield return new WaitForSeconds(0.2f);
-        }
-
-        // 4) 收尾，回到 Probe
-        ResetMoveAnim();
-        EnterProbe();
-    }
-
-
-    //────────────────── Evade 阶段 ──────────────────
-    void RunEvade()
-    {
-        // 改成只退一次
-        Vector3 away = (transform.position - player.position).normalized;
-        UpdateMoveAnim(-player.forward);
-
-        float evadeStep = 1.2f; // 退一小段
-        if (agent.isOnNavMesh)
-            agent.SetDestination(transform.position + away * evadeStep);
-        else
-            transform.Translate(away * evadeStep, Space.World);
-
-        // 等待短暂时间
-        Invoke(nameof(StopEvade), 0.2f);
-    }
-
-    private void StopEvade()
-    {
-        ResetMoveAnim();
-        EnterProbe();
-    }
-
-
-    //────────────────── Dodge ──────────────────
-    IEnumerator Dodge()
+    /// <summary>
+    /// 受到硬直通知：仅硬直后回 Probe
+    /// </summary>
+    /// <param name="duration">硬直时长</param>
+    public void OnStunned(float duration)
     {
         phase = Phase.Hit;
-        ResetMoveAnim();
-        anim.SetTrigger("Dodge");
-        float t = 0.3f;
-        while (t > 0f)
-        {
-            transform.Translate(-player.right * rushSpeed * Time.deltaTime, Space.World);
-            t -= Time.deltaTime;
-            yield return null;
-        }
-        EnterEvade();
+        // 动画播放或刚体受力等可以在 PlayerController/EnemyController 里处理
+        Invoke(nameof(EnterProbe), duration);
     }
 
-    //────────────────── 进入各阶段 ──────────────────
+    //────────────────── 阶段切换方法 ──────────────────
+
+    /// <summary>进入拉锯阶段</summary>
     void EnterProbe()
     {
         phase = Phase.Probe;
-        phaseTimer = Random.Range(0.5f, 0.8f); // 更快决策
+        // 拉锯时长随机，避免节奏僵硬
+        phaseTimer = Random.Range(0.5f, 1f);
         ResetMoveAnim();
     }
-    void EnterApproach() { phase = Phase.Approach; ResetMoveAnim(); }
+
+    /// <summary>进入接近阶段</summary>
+    void EnterApproach()
+    {
+        phase = Phase.Approach;
+        ResetMoveAnim();
+    }
+
+    /// <summary>进入连击阶段，初始化连击次数</summary>
     void EnterCombo()
     {
         phase = Phase.Combo;
         comboPunches = Random.Range(comboMin, comboMax + 1);
         phaseTimer = 0f;
     }
-    void EnterEvade()
-    {
-        phase = Phase.Evade;
-        phaseTimer = evadeDur;
-    }
-
-    public void OnStunned(float duration)
-    {
-        phase = Phase.Hit;
-        // 硬直结束后，直接重新开始 Probe（继续拉锯/接近/进攻）
-        Invoke(nameof(EnterProbe), duration);
-    }
-
 
     //────────────────── 动画辅助 ──────────────────
+
+    /// <summary>
+    /// 根据世界空间移动方向设置四向移动动画参数
+    /// </summary>
     private void UpdateMoveAnim(Vector3 worldDir)
     {
-        Vector3 ld = transform.InverseTransformDirection(worldDir.normalized);
-        anim.SetBool("MoveForward", ld.z > 0.2f);
-        anim.SetBool("MoveBackward", ld.z < -0.2f);
-        anim.SetBool("MoveRight", ld.x > 0.2f);
-        anim.SetBool("MoveLeft", ld.x < -0.2f);
+        Vector3 localDir = transform.InverseTransformDirection(worldDir.normalized);
+        anim.SetBool("MoveForward", localDir.z > 0.2f);
+        anim.SetBool("MoveBackward", localDir.z < -0.2f);
+        anim.SetBool("MoveRight", localDir.x > 0.2f);
+        anim.SetBool("MoveLeft", localDir.x < -0.2f);
     }
+
+    /// <summary>关闭所有移动动画参数</summary>
     private void ResetMoveAnim()
     {
         anim.SetBool("MoveForward", false);
         anim.SetBool("MoveBackward", false);
         anim.SetBool("MoveRight", false);
         anim.SetBool("MoveLeft", false);
+    }
+
+    /// <summary>获取当前与玩家的距离</summary>
+    private float distToPlayer()
+    {
+        return Vector3.Distance(transform.position, player.position);
     }
 }

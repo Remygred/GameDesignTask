@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class CrosshairColorSwitcher : MonoBehaviour
 {
     [Header("检测参数")]
-    public Camera cam;                     // 主摄像机（若空自动 Camera.main）
+    public Transform cam;                     // 主摄像机（若空自动 Camera.main）
     public float checkRange = 50f;         // 检测最远距离
     public LayerMask enemyMask;            // 敌人层
     public LayerMask obstacleMask;         // 障碍层（墙体等，优先阻挡）
@@ -18,13 +18,13 @@ public class CrosshairColorSwitcher : MonoBehaviour
     void Awake()
     {
         img = GetComponent<Image>();
-        if (cam == null) cam = Camera.main;
+        if (cam == null) cam = Camera.main.transform;
     }
 
     void Update()
     {
         // 从摄像机正前方发射一条射线
-        Ray ray = new Ray(cam.transform.position, cam.transform.forward);
+        Ray ray = new Ray(cam.position, cam.forward);
         // 先做一次“是否被墙挡住”的检测
         if (Physics.Raycast(ray, out RaycastHit hit, checkRange, obstacleMask | enemyMask,
                             QueryTriggerInteraction.Ignore))

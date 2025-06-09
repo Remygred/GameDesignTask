@@ -3312,16 +3312,9 @@ MonoBehaviour:
   chaseThreshold: 8
   footSpeed: 2.8
   chaseSpeed: 4
-  rushSpeed: 3.8
   comboGap: {x: 0.3, y: 0.4}
   comboMin: 3
   comboMax: 5
-  blockDetectDist: 5
-  blockChance: 0.5
-  blockDuration: 0.6
-  dodgeDetectDist: 1.5
-  dodgeChance: 0.3
-  evadeDur: 0.5
 --- !u!114 &778788985
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3493,10 +3486,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.94210434
+  m_Radius: 1.1662121
   m_Height: 6.08852
   m_Direction: 1
-  m_Center: {x: -0.1888032, y: 2.8730493, z: 0.39842844}
+  m_Center: {x: -0.2562766, y: 2.8730493, z: 0.39842844}
 --- !u!54 &778788990
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5522,7 +5515,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74d41140f29d9134e8545ca132ade045, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 1891967300}
+  cam: {fileID: 4390024051263612773}
   checkRange: 50
   enemyMask:
     serializedVersion: 2
@@ -7879,7 +7872,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1649377810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11720,8 +11713,8 @@ MonoBehaviour:
     m_Bits: 128
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 256
-  muzzle: {fileID: 633641705}
+    m_Bits: 0
+  muzzle: {fileID: 4390024051263612773}
   anim: {fileID: 5866666021467424222}
   normalDamage: 10
   heavyDamage: 25

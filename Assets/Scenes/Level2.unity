@@ -106,7 +106,7 @@ NavMeshSettings:
   m_BuildSettings:
     serializedVersion: 2
     agentTypeID: 0
-    agentRadius: 0.5
+    agentRadius: 0.2
     agentHeight: 2
     agentSlope: 45
     agentClimb: 0.4
@@ -114,7 +114,7 @@ NavMeshSettings:
     maxJumpAcrossDistance: 0
     minRegionArea: 2
     manualCellSize: 0
-    cellSize: 0.16666667
+    cellSize: 0.06666667
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
@@ -248,6 +248,36 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &254932734
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 254932735}
+  m_Layer: 10
+  m_Name: Punch
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &254932735
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 254932734}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.281, y: 4.725, z: 1.462}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4653348004890749733}
+  m_RootOrder: 26
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &325947777
 GameObject:
   m_ObjectHideFlags: 0
@@ -2195,7 +2225,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74d41140f29d9134e8545ca132ade045, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 5124738098552001989}
+  cam: {fileID: 8931418422158447588}
   checkRange: 50
   enemyMask:
     serializedVersion: 2
@@ -3762,7 +3792,7 @@ GameObject:
   - component: {fileID: 784119708853082863}
   m_Layer: 7
   m_Name: mixamorig:RightHand_end
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3854,7 +3884,7 @@ GameObject:
   - component: {fileID: 784119708909258556}
   m_Layer: 7
   m_Name: mixamorig:LeftShoulder
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3885,7 +3915,7 @@ GameObject:
   - component: {fileID: 784119708925550259}
   m_Layer: 7
   m_Name: mixamorig:LeftArm
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3916,7 +3946,7 @@ GameObject:
   - component: {fileID: 784119708934035659}
   m_Layer: 7
   m_Name: mixamorig:RightToe_End
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3978,7 +4008,7 @@ GameObject:
   - component: {fileID: 784119708979428612}
   m_Layer: 7
   m_Name: mixamorig:Neck
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4071,7 +4101,7 @@ GameObject:
   - component: {fileID: 784119709017476664}
   m_Layer: 7
   m_Name: mixamorig:RightToeBase
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4132,7 +4162,7 @@ GameObject:
   - component: {fileID: 784119709060377664}
   m_Layer: 7
   m_Name: mixamorig:RightShoulder
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4163,7 +4193,7 @@ GameObject:
   - component: {fileID: 784119709088130223}
   m_Layer: 7
   m_Name: mixamorig:LeftHand
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4309,10 +4339,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.94210434
+  m_Radius: 1.4609998
   m_Height: 6.08852
   m_Direction: 1
-  m_Center: {x: -0.1888032, y: 2.8730493, z: 0.39842844}
+  m_Center: {x: -0.09411076, y: 2.8730493, z: 0.39842853}
 --- !u!82 &784119709150269219
 AudioSource:
   m_ObjectHideFlags: 0
@@ -4491,16 +4521,9 @@ MonoBehaviour:
   chaseThreshold: 9
   footSpeed: 2.8
   chaseSpeed: 4
-  rushSpeed: 3
   comboGap: {x: 0.3, y: 0.4}
   comboMin: 3
   comboMax: 5
-  blockDetectDist: 5
-  blockChance: 0.5
-  blockDuration: 0.6
-  dodgeDetectDist: 1.5
-  dodgeChance: 0.3
-  evadeDur: 0.5
 --- !u!1 &784119709150269225
 GameObject:
   m_ObjectHideFlags: 0
@@ -4729,7 +4752,7 @@ GameObject:
   - component: {fileID: 784119709231851023}
   m_Layer: 7
   m_Name: mixamorig:LeftToeBase 1
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4760,7 +4783,7 @@ GameObject:
   - component: {fileID: 784119709249236947}
   m_Layer: 7
   m_Name: mixamorig:LeftToeBase
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4793,7 +4816,7 @@ GameObject:
   - component: {fileID: 784119709258852859}
   m_Layer: 7
   m_Name: mixamorig:Hips 1
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4902,7 +4925,7 @@ GameObject:
   - component: {fileID: 784119709269048096}
   m_Layer: 7
   m_Name: Boxing Glove.001
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5041,7 +5064,7 @@ GameObject:
   - component: {fileID: 784119709293104814}
   m_Layer: 7
   m_Name: Cube.005
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5072,7 +5095,7 @@ GameObject:
   - component: {fileID: 784119709293516368}
   m_Layer: 7
   m_Name: mixamorig:LeftLeg 1
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5102,7 +5125,7 @@ GameObject:
   - component: {fileID: 784119709311688353}
   m_Layer: 7
   m_Name: mixamorig:LeftToe_End_end
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5241,7 +5264,7 @@ GameObject:
   - component: {fileID: 784119709360346426}
   m_Layer: 7
   m_Name: mixamorig:LeftToe_End 1
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5380,7 +5403,7 @@ GameObject:
   - component: {fileID: 784119709391006159}
   m_Layer: 7
   m_Name: Cube.007
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5454,7 +5477,7 @@ GameObject:
   - component: {fileID: 784119709451645567}
   m_Layer: 7
   m_Name: Cube.006
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5562,7 +5585,7 @@ GameObject:
   - component: {fileID: 784119709469146632}
   m_Layer: 7
   m_Name: mixamorig:Spine
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5840,7 +5863,7 @@ GameObject:
   - component: {fileID: 784119709561573717}
   m_Layer: 7
   m_Name: mixamorig:RightForeArm
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6009,7 +6032,7 @@ GameObject:
   - component: {fileID: 784119709724840068}
   m_Layer: 7
   m_Name: mixamorig:LeftUpLeg 1
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6178,7 +6201,7 @@ GameObject:
   - component: {fileID: 784119709772080392}
   m_Layer: 7
   m_Name: mixamorig:LeftToe_End_end 1
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6209,7 +6232,7 @@ GameObject:
   - component: {fileID: 784119709790419427}
   m_Layer: 7
   m_Name: mixamorig:LeftLeg
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6265,7 +6288,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 4
+  m_Lightmapping: 2
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
@@ -6346,7 +6369,7 @@ GameObject:
   - component: {fileID: 784119709869348374}
   m_Layer: 7
   m_Name: mixamorig:HeadTop_End_end
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6485,7 +6508,7 @@ GameObject:
   - component: {fileID: 784119709908093879}
   m_Layer: 7
   m_Name: Cube.002
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6516,7 +6539,7 @@ GameObject:
   - component: {fileID: 784119709937699692}
   m_Layer: 7
   m_Name: mixamorig:RightHand
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6547,7 +6570,7 @@ GameObject:
   - component: {fileID: 784119709971562690}
   m_Layer: 7
   m_Name: mixamorig:HeadTop_End
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6871,7 +6894,7 @@ GameObject:
   - component: {fileID: 784119710104869292}
   m_Layer: 7
   m_Name: Cube.003
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6996,7 +7019,7 @@ GameObject:
   - component: {fileID: 784119710126144255}
   m_Layer: 7
   m_Name: mixamorig:Hips
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7121,7 +7144,7 @@ GameObject:
   - component: {fileID: 784119710126296204}
   m_Layer: 7
   m_Name: Cube.010
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7229,7 +7252,7 @@ GameObject:
   - component: {fileID: 784119710139028517}
   m_Layer: 7
   m_Name: Cube.004
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7291,7 +7314,7 @@ GameObject:
   - component: {fileID: 784119710144451838}
   m_Layer: 7
   m_Name: mixamorig:LeftFoot 1
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7430,7 +7453,7 @@ GameObject:
   - component: {fileID: 784119710147442854}
   m_Layer: 7
   m_Name: Head
-  m_TagString: Head
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7461,7 +7484,7 @@ GameObject:
   - component: {fileID: 784119710165079795}
   m_Layer: 7
   m_Name: mixamorig:LeftUpLeg
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7600,7 +7623,7 @@ GameObject:
   - component: {fileID: 784119710188178791}
   m_Layer: 7
   m_Name: Cube.008
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7656,7 +7679,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 4
+  m_Lightmapping: 2
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
@@ -7738,7 +7761,7 @@ GameObject:
   - component: {fileID: 784119710192005939}
   m_Layer: 7
   m_Name: mixamorig:LeftFoot
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7846,7 +7869,7 @@ GameObject:
   - component: {fileID: 784119710200011757}
   m_Layer: 7
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7879,7 +7902,7 @@ GameObject:
   - component: {fileID: 784119710217552882}
   m_Layer: 7
   m_Name: mixamorig:Spine2
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8017,7 +8040,7 @@ GameObject:
   - component: {fileID: 784119710237688640}
   m_Layer: 7
   m_Name: mixamorig:RightToe_End_end
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8264,7 +8287,7 @@ GameObject:
   - component: {fileID: 784119710324521644}
   m_Layer: 7
   m_Name: mixamorig:LeftToe_End
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8295,7 +8318,7 @@ GameObject:
   - component: {fileID: 784119710360255280}
   m_Layer: 7
   m_Name: mixamorig:RightUpLeg 1
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8650,7 +8673,7 @@ GameObject:
   - component: {fileID: 784119710622594010}
   m_Layer: 7
   m_Name: mixamorig:LeftHand_end
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8789,7 +8812,7 @@ GameObject:
   - component: {fileID: 784119710656983396}
   m_Layer: 7
   m_Name: Circle
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8820,7 +8843,7 @@ GameObject:
   - component: {fileID: 784119710662407729}
   m_Layer: 7
   m_Name: mixamorig:Spine 1
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8990,7 +9013,7 @@ GameObject:
   - component: {fileID: 784119710718439119}
   m_Layer: 7
   m_Name: mixamorig:RightFoot
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -9021,7 +9044,7 @@ GameObject:
   - component: {fileID: 784119710718485781}
   m_Layer: 7
   m_Name: mixamorig:LeftForeArm
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -9052,7 +9075,7 @@ GameObject:
   - component: {fileID: 784119710749239966}
   m_Layer: 7
   m_Name: mixamorig:RightArm
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -9221,7 +9244,7 @@ GameObject:
   - component: {fileID: 784119710840148693}
   m_Layer: 7
   m_Name: mixamorig:Head
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -9252,7 +9275,7 @@ GameObject:
   - component: {fileID: 784119710841266608}
   m_Layer: 7
   m_Name: mixamorig:RightLeg
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -9532,7 +9555,7 @@ GameObject:
   - component: {fileID: 784119710898504570}
   m_Layer: 7
   m_Name: mixamorig:Spine1
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -18548,7 +18571,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5467321532700783007}
-  m_LocalRotation: {x: -0, y: 0.9390413, z: -0, w: 0.34380436}
+  m_LocalRotation: {x: -0, y: 0.9453922, z: -0, w: 0.32593498}
   m_LocalPosition: {x: -5.83, y: -1.8098135, z: 14}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -18578,10 +18601,10 @@ Transform:
   - {fileID: 7193485516374364206}
   - {fileID: 5124738098552001988}
   - {fileID: 5124738100303246663}
-  - {fileID: 5124738099944615528}
+  - {fileID: 254932735}
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 139.782, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 141.956, z: 0}
 --- !u!33 &4658425712652344649
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -19303,36 +19326,6 @@ MonoBehaviour:
   maxHeadTurnAngle: 0
   bodyTurnSpeed: 150
   headTransform: {fileID: 0}
---- !u!4 &5124738099944615528
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5124738099944615529}
-  m_LocalRotation: {x: -0, y: -0.29715303, z: -0, w: 0.95482993}
-  m_LocalPosition: {x: 0.035, y: 4.65, z: 1.549}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4653348004890749733}
-  m_RootOrder: 26
-  m_LocalEulerAnglesHint: {x: 0, y: -34.573, z: 0}
---- !u!1 &5124738099944615529
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5124738099944615528}
-  m_Layer: 10
-  m_Name: Punch
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1 &5124738100303246660
 GameObject:
   m_ObjectHideFlags: 0
@@ -20032,7 +20025,7 @@ MonoBehaviour:
     m_Bits: 128
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 0
   muzzle: {fileID: 8931418422158447588}
   anim: {fileID: 1617970459955229023}
   normalDamage: 10
