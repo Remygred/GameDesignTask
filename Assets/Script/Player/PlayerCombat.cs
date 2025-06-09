@@ -34,6 +34,7 @@ public class PlayerCombat : MonoBehaviour
     #region 私有字段
     private float nextAttackTime;
     private bool isCharging;
+    [SerializeField]
     private float chargeTimer;
     private bool isBlocking;
     private bool isPunching;
@@ -82,8 +83,9 @@ public class PlayerCombat : MonoBehaviour
         // —— 蓄力中 —— //
         if (isCharging && Input.GetKey(KeyCode.Mouse0))
         {
-            chargeTimer += Time.deltaTime;
+            if(chargeTimer < chargeThreshold) chargeTimer += Time.deltaTime;
             OnChargeUpdate?.Invoke(Mathf.Clamp01(chargeTimer / chargeThreshold));
+            if (chargeTimer >= chargeThreshold - 0.5) PlaySound(chargingSfx,2.0f);
         }
 
         // —— 松开出拳 —— //
@@ -183,7 +185,7 @@ public class PlayerCombat : MonoBehaviour
 
     private void ApplyDamage(RaycastHit hit, int dmg, float force)
     {
-        PlaySound(hitSfx);
+        PlaySound(hitSfx,2.0f);
 
         // 击退（若敌人带刚体）
         if (hit.rigidbody)
@@ -198,8 +200,11 @@ public class PlayerCombat : MonoBehaviour
     #endregion
 
     // ──────────────────────────────
-    private void PlaySound(AudioClip clip)
+    private void PlaySound(AudioClip clip, float volumeScale = 1.0f)
     {
-        if (clip) audioSrc.PlayOneShot(clip);
+        if (clip)
+        {
+            audioSrc.PlayOneShot(clip, volumeScale);
+        }
     }
 }

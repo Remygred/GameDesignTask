@@ -17,6 +17,8 @@ public class CursorPauseManager : MonoBehaviour
 
     private bool isPaused;
 
+    public GameObject BGM;
+
     /* 单例可选 —— 方便跨场景访问
     public static CursorPauseManager Instance { get; private set; }
     void Awake()
@@ -48,6 +50,8 @@ public class CursorPauseManager : MonoBehaviour
         if (isPaused) return;
         isPaused = true;
 
+        BGM.SetActive(false);
+        
         Time.timeScale = 0f;            // 全局暂停
         LockCursor(false);              // 解锁并显示鼠标
         if (pausePanel) pausePanel.SetActive(true);
@@ -58,6 +62,8 @@ public class CursorPauseManager : MonoBehaviour
     {
         if (!isPaused) return;
         isPaused = false;
+
+        BGM.SetActive(true);
 
         Time.timeScale = 1f;
         LockCursor(true);               // 重新锁定隐藏

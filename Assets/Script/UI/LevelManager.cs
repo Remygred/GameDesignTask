@@ -27,6 +27,10 @@ public class LevelManager : MonoBehaviour
     [Header("玩家位置")]
     public Transform PlayerTransform;
 
+    public GameObject BGM;
+
+    AudioSource audioS;//声音
+    public AudioClip win,lose;
     void Awake()
     {
         if (Instance == null) Instance = this;
@@ -39,11 +43,14 @@ public class LevelManager : MonoBehaviour
         if (victoryPanel) victoryPanel.SetActive(false);
         if (defeatPanel) defeatPanel.SetActive(false);
         Time.timeScale = 1f;
+        audioS = GetComponent<AudioSource>();
     }
 
     /* ---------- 敌人 / 玩家 调用 ---------- */
     public void OnEnemyDefeated()
     {
+        BGM.SetActive(false);
+        audioS.PlayOneShot(win);
         Cursor.lockState = CursorLockMode.None;     // 解锁
         Cursor.visible = true;
         Debug.Log("[LevelManager] Enemy defeated");
@@ -53,6 +60,9 @@ public class LevelManager : MonoBehaviour
 
     public void OnPlayerDefeated()
     {
+        BGM.SetActive(false);
+        audioS.PlayOneShot(lose);
+        audioS.Play();
         Cursor.lockState = CursorLockMode.None;     // 解锁
         Cursor.visible = true;
         Debug.Log("[LevelManager] Player defeated");
