@@ -4493,7 +4493,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbf3a8a9655326740a5714712001c714, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 20
+  damage: 15
   atkRange: 6
   hitForce: 6
   cooldown: 1.2
@@ -4516,11 +4516,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 076b33885596c0f44a9bb8965fa8333c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ideal: 6
-  attackDist: 6
+  ideal: 5.5
+  attackDist: 5.5
   chaseThreshold: 9
-  footSpeed: 2.8
-  chaseSpeed: 4
+  footSpeed: 2.5
+  chaseSpeed: 3
   comboGap: {x: 0.3, y: 0.4}
   comboMin: 3
   comboMax: 5
@@ -20204,7 +20204,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68f8f6e29bdf7184786e5a33498e3ce2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 2.8
+  moveSpeed: 3.2
   airControlPercent: 0.4
   jumpHeight: 1.6
   gravityMultiplier: 2
